@@ -1,1 +1,8 @@
 {% extends 'base.html' %}
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Запустить парсер</button>
+    </form>
+{% endblock %}
