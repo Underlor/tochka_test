@@ -41,21 +41,6 @@ class Parser(Thread):
                     last_price=cols[6].replace(',', '') if cols[6].replace(',', '') else 0,
                     shares_held=cols[7].replace(',', ''),
                 ))
-                # try:
-                #     Trader(
-                #         share=share,
-                #         name=cols[0],
-                #         relation=cols[1],
-                #         lastdate=cols[2],
-                #         transaction_type=cols[3],
-                #         owner_type=cols[4],
-                #         shares_traded=cols[5].strip().replace(',', ''),
-                #         last_price=cols[6].strip().replace(',', '') if cols[6].strip().replace(',', '') else 0,
-                #         shares_held=cols[7].strip().replace(',', ''),
-                #     ).save()
-                # except Exception as e:
-                #     print(f"{cols[0]}, {cols[5]}, {cols[6]}, {cols[7]}, ")
-                #     raise e
 
         Trader.objects.bulk_create(items)
 
@@ -99,9 +84,8 @@ class Parser(Thread):
                     soup = BeautifulSoup(page.text, 'html.parser')
                     Parser.save_data(soup, share)
         return {
-            'share_count': counter,
             'time to shera parse': (time_start2 - time_start).seconds,
-            'tome to traders parse': (datetime.now() - time_start2).seconds,
+            'ti me to traders parse': (datetime.now() - time_start2).seconds,
         }
 
     def start(self):
