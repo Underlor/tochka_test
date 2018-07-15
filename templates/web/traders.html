@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ traders.0.share }}</h1>
+<table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Insider</th>
+            <th scope="col">Relation</th>
+            <th scope="col">Last Date</th>
+            <th scope="col">Transaction Type</th>
+            <th scope="col">OwnerType</th>
+            <th scope="col">Shares Traded</th>
+            <th scope="col">Last Price</th>
+            <th scope="col">Shares Held</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for trader in traders %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="/{{ trader.share }}/insider/{{ trader.id }}">{{ trader.name }}</a></td>
+                <td>{{ trader.relation }}</td>
+                <td>{{ trader.lastdate|date:"m/d/Y" }}</td>
+                <td>{{ trader.transaction_type }}</td>
+                <td>{{ trader.owner_type }}</td>
+                <td>{{ trader.shares_traded }}</td>
+                <td>{{ trader.last_price }}</td>
+                <td>{{ trader.shares_held }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

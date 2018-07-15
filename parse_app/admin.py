@@ -8,6 +8,7 @@ from parse_app.models import Share, Trader
 class ShareAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)
 
+
 @admin.register(Trader)
 class TraderAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'share',)

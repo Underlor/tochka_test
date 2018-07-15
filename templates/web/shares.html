@@ -1,5 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ share.name }}</h1>
+    <h1>{{ shares.0.name }}</h1>
+    <h4>Traders: <a href="/{{ shares.0.name }}/insider" ><button class="btn btn-danger">Click me</button></a></h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Name</th>
+            <th scope="col">Open</th>
+            <th scope="col">Higt</th>
+            <th scope="col">Low</th>
+            <th scope="col">Close</th>
+            <th scope="col">Volume</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for share in shares %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ share.date|date:"m/d/Y" }}</td>
+                <td>{{ share.name }}</td>
+                <td>{{ share.open }}</td>
+                <td>{{ share.higt }}</td>
+                <td>{{ share.low }}</td>
+                <td>{{ share.close }}</td>
+                <td>{{ share.volume }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
 {% endblock %}

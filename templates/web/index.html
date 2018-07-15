@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% for share in shares %}
-    <a href="/{{ share.name }}/">{{ share.name }}</a>
-{% endfor %}
+    <ul>
+        {% for share in shares %}
+            <li><a href="/{{ share.name }}/">{{ share.name }}</a></li>
+        {% endfor %}
+
+    </ul>
 {% endblock %}

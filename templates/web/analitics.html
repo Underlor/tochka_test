@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% else %}
+        <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">OPEN</th>
+            <th scope="col">CLOSE</th>
+            <th scope="col">HIGT</th>
+            <th scope="col">LOW</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ prices.open|floatformat }}</td>
+                <td>{{ prices.close|floatformat }}</td>
+                <td>{{ prices.higt|floatformat }}</td>
+                <td>{{ prices.low|floatformat }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}

@@ -17,18 +17,19 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from parse_app.views import ParserView
-from web.views import IndexView, ShareView
+from web.views import IndexView, ShareView, TradersView, AnaliticsView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(
         [
-            url(r'^$', IndexView.as_view(api=True)),
-            url(r'^(?P<share_name>[\d\w]+)/$', ShareView.as_view(api=True)),
         ]
     )),
     url(r'^parse/$', ParserView.as_view(template_name='parse/index.html'), name='parse'),
-    url(r'^(?P<share_name>[\d\w]+)/$', ShareView.as_view(template_name='web/index.html')),
+    url(r'^(?P<share_name>[\d\w]+)/$', ShareView.as_view(template_name='web/shares.html')),
+    url(r'^(?P<share_name>[\d\w]+)/analytics$', AnaliticsView.as_view(template_name='web/analitics.html')),
+    url(r'^(?P<share_name>[\d\w]+)/insider$', TradersView.as_view(template_name='web/traders.html')),
+    url(r'^(?P<share_name>[\d\w]+)/insider/(?P<trader_id>[\d]+)$', TradersView.as_view(template_name='web/traders.html')),
     url(r'^$', IndexView.as_view(template_name='web/index.html'), name='index'),
 ]
 
