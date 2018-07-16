@@ -1,15 +1,8 @@
-import json
 from datetime import datetime, date
 
-from django import forms
-from django.core import serializers
 from django.db.models import Q
-from django.forms import model_to_dict
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
-
-# Create your views here.
-from django.views.generic import TemplateView, FormView
+from django.http import JsonResponse
+from django.views.generic import TemplateView
 
 from parse_app.models import Share, Trader
 

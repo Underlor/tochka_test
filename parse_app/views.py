@@ -1,15 +1,13 @@
 import re
-import time
+from datetime import datetime
+from multiprocessing.dummy import Pool
 from threading import Thread
 
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
 from django import forms
-
 # Create your views here.
 from django.views.generic import FormView
-from multiprocessing.dummy import Pool
 
 from parse_app.models import Share, Trader
 

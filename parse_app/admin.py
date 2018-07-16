@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
 from parse_app.models import Share, Trader
 
 
