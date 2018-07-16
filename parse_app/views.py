@@ -29,11 +29,17 @@ class Parser(Thread):
         for row in rows:
             cols = [ele.text.strip() for ele in row.find_all('td')]
             if len(cols) > 0:
+                if not len(cols[1]):
+                    continue
+                try:
+                    date = (datetime.strptime(cols[2], "%m/%d/%Y"))
+                except ValueError:
+                    date = datetime.today()
                 items.append(Trader(
                     share=share,
                     name=cols[0],
                     relation=cols[1],
-                    lastdate=(datetime.strptime(cols[2], "%m/%d/%Y")),
+                    lastdate=date,
                     transaction_type=cols[3],
                     owner_type=cols[4],
                     shares_traded=cols[5].replace(',', ''),
@@ -57,10 +63,13 @@ class Parser(Thread):
             cols = [ele.text.strip() for ele in row.find_all('td')]
             if not len(cols[1]):
                 continue
-            print(datetime.strptime(cols[0], "%m/%d/%Y"))
-            items.append(Share.objects.create(
+            try:
+                date = (datetime.strptime(cols[0], "%m/%d/%Y"))
+            except ValueError:
+                date = datetime.today()
+            items.append(Share(
                 name=share,
-                date=(datetime.strptime(cols[0], "%m/%d/%Y")),
+                date=date,
                 open=cols[1].replace(',', ''),
                 higt=cols[2].replace(',', ''),
                 low=cols[3].replace(',', ''),
@@ -68,7 +77,7 @@ class Parser(Thread):
                 volume=cols[5].replace(',', ''),
             ))
             counter += 1
-        # Share.objects.bulk_create(items)
+        Share.objects.bulk_create(items)
         time_start2 = datetime.now()
 
         page = requests.get(f'https://www.nasdaq.com/symbol/{share}/insider-trades')
@@ -76,25 +85,24 @@ class Parser(Thread):
         paginator = soup.find('a', {'id': 'quotes_content_left_lb_LastPage'})
         Parser.save_data(soup, share)
         if paginator:
-            print(paginator['href'])
             res = re.search(r'page=(\d+)', paginator['href'])
             if res:
                 page = int(res.group(1))
                 pages = 10 if page > 10 else page
                 for i in range(1, pages + 1):
-                    print(share, i)
                     page = requests.get(f'https://www.nasdaq.com/symbol/{share}/insider-trades?page={i}')
                     soup = BeautifulSoup(page.text, 'html.parser')
                     Parser.save_data(soup, share)
         return {
+            'share': share,
             'time to shera parse': (time_start2 - time_start).seconds,
-            'ti me to traders parse': (datetime.now() - time_start2).seconds,
+            'time to traders parse': (datetime.now() - time_start2).seconds,
         }
 
     def start(self):
         pool = Pool(self.threads_count)
         results = pool.map(self.parce, self.name_list)
-        print(results)
+        return results
 
 
 class InputForm(forms.Form):
@@ -112,6 +120,6 @@ class ParserView(FormView):
             time_start = datetime.now()
             Share.objects.all().delete()
             Trader.objects.all().delete()
-            Parser(request.POST['thread_count'], file_data).start()
-            print('Fulltime:', (datetime.now() - time_start).seconds)
+            kwargs['result'] = Parser(request.POST['thread_count'], file_data).start()
+            kwargs['fulltime'] = ('Fulltime: %s' % (datetime.now() - time_start).seconds)
         return self.get(request, *args, **kwargs)

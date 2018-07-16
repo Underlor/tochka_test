@@ -5,4 +5,7 @@
         {{ form }}
         <button type="submit">Запустить парсер</button>
     </form>
+    {% if success %}
+        Парс завершен
+    {% endif %}
 {% endblock %}
