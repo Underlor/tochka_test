@@ -22,7 +22,7 @@
                 <th scope="row">{{ forloop.counter }}</th>
                 <td><a href="/{{ trader.share }}/insider/{{ trader.id }}">{{ trader.name }}</a></td>
                 <td>{{ trader.relation }}</td>
-                <td>{{ trader.lastdate|date:"m/d/Y" }}</td>
+                <td>{{ trader.lastdate }}</td>
                 <td>{{ trader.transaction_type }}</td>
                 <td>{{ trader.owner_type }}</td>
                 <td>{{ trader.shares_traded }}</td>

@@ -20,7 +20,7 @@
         {% for share in shares %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ share.date|date:"m/d/Y" }}</td>
+                <td>{{ share.date }}</td>
                 <td>{{ share.name }}</td>
                 <td>{{ share.open }}</td>
                 <td>{{ share.higt }}</td>

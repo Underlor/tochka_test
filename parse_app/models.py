@@ -11,6 +11,18 @@ class Share(models.Model):
     close = models.FloatField(default=0)
     volume = models.IntegerField(default=0)
 
+    def json_serialise(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'date': self.date.strftime('%m/%d/%Y'),
+            'open': self.open,
+            'higt': self.higt,
+            'low': self.low,
+            'close': self.close,
+            'volume': self.volume,
+        }
+
     class Meta:
         db_table = 'parse_app_share'
 
@@ -25,6 +37,20 @@ class Trader(models.Model):
     shares_traded = models.IntegerField()
     last_price = models.FloatField()
     shares_held = models.IntegerField()
+
+    def json_serialise(self):
+        return {
+            'id': self.id,
+            'share': self.share,
+            'name': self.name,
+            'relation': self.relation,
+            'lastdate': self.lastdate.strftime('%m/%d/%Y'),
+            'transaction_type': self.transaction_type,
+            'owner_type': self.owner_type,
+            'shares_traded': self.shares_traded,
+            'last_price': self.last_price,
+            'shares_held': self.shares_held,
+        }
 
     class Meta:
         db_table = 'parse_app_trader'
