@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 
 from django.db.models import Q
 from django.http import JsonResponse
@@ -47,31 +47,37 @@ class AnaliticsView(MainView):
             try:
                 date_from = datetime.strptime(request.GET['date_from'], "%m/%d/%Y")
                 date_to = datetime.strptime(request.GET['date_to'], "%m/%d/%Y")
-
-                shares = Share.objects.filter(name=kwargs['share_name']).filter(
-                    Q(date=date_from) | Q(date=date_to)).all()
-
-                if shares.count() < 2:
-                    kwargs['error'] = 'Не удалось посчитать разницу цен. Не удалось найти все акции по указанным датам.'
-                    return super().get(request, *args, **kwargs)
-
-                kwargs['prices'] = {
-                    'open': abs(shares[0].open - shares[1].open),
-                    'close': abs(shares[0].close - shares[1].close),
-                    'higt': abs(shares[0].higt - shares[1].higt),
-                    'low': abs(shares[0].low - shares[1].low),
-                }
-
             except ValueError:
                 kwargs['error'] = 'Ошибка в формате данных для даты. Формат: Месяц/День/Год'
                 return super().get(request, *args, **kwargs)
+            shares = Share.objects.filter(name=kwargs['share_name']).filter(
+                Q(date=date_from) | Q(date=date_to)).all()
+
+            if shares.count() < 2:
+                kwargs['error'] = 'Не удалось посчитать разницу цен. Не удалось найти все акции по указанным датам.'
+                return super().get(request, *args, **kwargs)
+
+            kwargs['prices'] = {
+                'open': abs(shares[0].open - shares[1].open),
+                'close': abs(shares[0].close - shares[1].close),
+                'higt': abs(shares[0].higt - shares[1].higt),
+                'low': abs(shares[0].low - shares[1].low),
+            }
 
         return super().get(request, *args, **kwargs)
 
 
 class DeltaView(MainView):
     def get(self, request, *args, **kwargs):
-        shares = Share.objects.filter(name=kwargs['share_name'], date__gte=date.today().replace(day=1)).order_by('date')
+        try:
+            date_from = datetime.strptime(request.GET['date_from'], "%m/%d/%Y")
+        except ValueError:
+            try:
+                date_from = datetime.strptime(request.GET['date_from'], "%m/%Y")
+            except ValueError:
+                kwargs['result'] = 'Неверный формат даты!'
+                return super().get(request, *args, **kwargs)
+        shares = Share.objects.filter(name=kwargs['share_name'], date__gte=date_from.replace(day=1)).order_by('date')
         delta = request.GET.get('value')
         val_type = request.GET.get('type')
         for item in shares.all():
@@ -81,4 +87,5 @@ class DeltaView(MainView):
                 if next_item[val_type] - item[val_type] >= float(delta):
                     kwargs['result'] = f"{item['date']} - {next_item['date']}"
                     return super().get(request, *args, **kwargs)
+        kwargs['result'] = 'Не удалось расчитать дельту'
         return super().get(request, *args, **kwargs)
