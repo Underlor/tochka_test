@@ -32,7 +32,6 @@ class ShareView(MainView):
 class TradersView(MainView):
     def get(self, request, *args, **kwargs):
         kwargs['traders'] = Trader.objects.filter(share=kwargs['share_name'])
-
         if 'trader_id' in kwargs:
             kwargs['traders'] = kwargs['traders'].filter(name=Trader.objects.filter(
                 id=kwargs['trader_id']).first().name)
